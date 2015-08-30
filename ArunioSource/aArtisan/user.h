@@ -29,7 +29,7 @@
 
 // default values for systems without calibration values stored in EEPROM
 #define CAL_GAIN 1.00 // you may substitute a known gain adjustment from calibration
-#define UV_OFFSET 0 // you may subsitute a known value for uV offset in ADC
+#define UV_OFFSET 0 // you may substitute a known value for uV offset in ADC
 #define AMB_OFFSET 0.0 // you may substitute a known value for amb temp offset (Celsius)
 
 #define TIME_BASE pwmN1Hz // cycle time for PWM output to SSR's on OT1, OT2
@@ -38,7 +38,7 @@
 // Useful for debugging only -- leave inactive otherwise
 //#define MEMORY_CHK
 
-// This turns on the "# xxxxxxx\n" acknowledgements after commands
+// This turns on the "# xxxxxxx\n" acknowledgments after commands
 //#define ACKS_ON
 
 

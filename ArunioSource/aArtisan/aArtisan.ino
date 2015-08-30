@@ -68,6 +68,8 @@
 
 // this library included with the arduino distribution
 #include <Wire.h>
+#include <OneWire.h> //Ds18b20
+
 
 // The user.h file contains user-definable and some other global compiler options
 // It must be located in the same folder as aArtisan.pde
@@ -89,6 +91,10 @@
 #ifdef LCD
 #include <cLCD.h> // required only if LCD is used
 #endif
+
+OneWire  ds(7);  // on pin 7 (a 4.7K resistor is necessary)
+
+byte addr[8];
 
 // ------------------------ other compile directives
 #define MIN_DELAY 300   // ms between ADC samples (tested OK at 270)
@@ -217,7 +223,9 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
       v = fT[k].doFilter( v << 10 );  // multiply by 1024 to create some resolution for filter
       v >>= 10; 
       AT = amb.getAmbF();
-      T[k] = tc.Temp_F( 0.001 * v, AT ); // convert uV to Fahrenheit;
+      //T[k] = tc.Temp_F( 0.001 * v, AT ); // convert uV to Fahrenheit;
+	  // [Vo Huu Tai 27/8/2015 ]  Simulation sensor data
+	  T[k] = (int)fTempRead();// random(300);
     }
   }
 };
@@ -268,6 +276,50 @@ void updateLCD() {
   }
 }
 #endif
+
+float fTempRead()
+{
+	byte data[12];
+	byte present = 0;
+	float celsius;
+
+	// the first ROM byte indicates which chip
+	if(addr[0] != 0x28)
+	{
+		Serial.println("NOT is DS18B20");
+		return 0;
+	}
+
+	ds.reset();
+	ds.select(addr);
+	ds.write(0x44, 1);        // start conversion, with parasite power on at the end
+
+	delay(750);     // maybe 750ms is enough, maybe not
+	// we might do a ds.depower() here, but the reset will take care of it.
+
+	present = ds.reset();
+	ds.select(addr);
+	ds.write(0xBE);         // Read Scratchpad
+
+	for ( int i = 0; i < 9; i++) {           // we need 9 bytes
+		data[i] = ds.read();
+	}
+
+	// Convert the data to actual temperature
+	// because the result is a 16 bit signed integer, it should
+	// be stored to an "int16_t" type, which is always 16 bits
+	// even when compiled on a 32 bit processor.
+	int16_t raw = (data[1] << 8) | data[0];
+	byte cfg = (data[4] & 0x60);
+	// at lower res, the low bits are undefined, so let's zero them
+	if (cfg == 0x00) raw = raw & ~7;  // 9 bit resolution, 93.75 ms
+	else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
+	else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
+	//// default is 12 bit resolution, 750 ms conversion time
+
+	celsius = (float)raw / 16.0;
+	return celsius;
+}
 
 // ------------------------------------------------------------------------
 // MAIN
@@ -334,6 +386,14 @@ void setup()
   delay( 500 );
   lcd.clear();
 #endif
+// [Vo Huu Tai 27/8/2015 ]  Add random for simulation sensor data
+ randomSeed(analogRead(0));
+  
+  while(!ds.search(addr)) //search ds18b20
+  {
+	  ds.reset_search();
+	  delay(250);
+  }
 }
 
 // -----------------------------------------------------------------
