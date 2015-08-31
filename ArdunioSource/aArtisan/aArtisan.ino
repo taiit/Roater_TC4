@@ -96,6 +96,10 @@ OneWire  ds(7);  // on pin 7 (a 4.7K resistor is necessary)
 
 byte addr[8];
 
+// Pin 13 has an LED connected on most Arduino boards.
+// give it a name:
+int ledBug = 13;
+
 // ------------------------ other compile directives
 #define MIN_DELAY 300   // ms between ADC samples (tested OK at 270)
 #define DP 1  // decimal places for output on serial port
@@ -225,7 +229,7 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
       AT = amb.getAmbF();
       //T[k] = tc.Temp_F( 0.001 * v, AT ); // convert uV to Fahrenheit;
 	  // [Vo Huu Tai 27/8/2015 ]  Simulation sensor data
-	  T[k] = (int)fTempRead();// random(300);
+	  T[k] =  random(300); //(int)fTempRead();
     }
   }
 };
@@ -381,19 +385,24 @@ void setup()
   ci.addCommand( &rf2000 );
   ci.addCommand( &rc2000 );
   ci.addCommand( &reader );
-
+// [Vo Huu Tai 31/8/2015 ]  Add new command for test relay
+  ci.addCommand( &relay1 );
+  ci.addCommand( &relay2 );
+// [Vo Huu Tai 31/8/2015 ]  End add new command for test relay
 #ifdef LCD
   delay( 500 );
   lcd.clear();
 #endif
 // [Vo Huu Tai 27/8/2015 ]  Add random for simulation sensor data
  randomSeed(analogRead(0));
-  
+  pinMode(13, OUTPUT);  
+ #if 0 
   while(!ds.search(addr)) //search ds18b20
   {
 	  ds.reset_search();
 	  delay(250);
   }
+  #endif
 }
 
 // -----------------------------------------------------------------

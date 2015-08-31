@@ -36,11 +36,12 @@
 #define NC 4 // maximum number of physical channels on the TC4
 
 // Useful for debugging only -- leave inactive otherwise
-//#define MEMORY_CHK
+#define MEMORY_CHK
 
 // This turns on the "# xxxxxxx\n" acknowledgments after commands
 //#define ACKS_ON
 
+#define LED_BUG 13 //led bug pin
 
 // *************************************************************************************
 

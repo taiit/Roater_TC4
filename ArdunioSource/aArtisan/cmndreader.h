@@ -57,7 +57,10 @@
 #define DIGITAL_WRITE_CMD "DWRITE" // turn digital pin LOW or HIGH
 #define ANALOG_WRITE_CMD "AWRITE" // write a value 0 to 255 to PWM pin
 #define IO3 3 // use DIO3 for PWM output
-
+// [Vo Huu Tai 31/8/2015 ]  ADD
+#define RELAY1_CMD "RL1"
+#define RELAY2_CMD "RL2"
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 
 // forward declarations
 class dwriteCmnd;
@@ -70,6 +73,10 @@ class io3Cmnd;
 class unitsCmnd;
 class rf2000Cmnd;
 class rc2000Cmnd;
+// [Vo Huu Tai 31/8/2015 ]  ADD
+class relay1Cmd;
+class relay2Cmd;
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 
 // external declarations of class objects
 extern readCmnd reader;
@@ -82,7 +89,10 @@ extern io3Cmnd io3;
 extern rf2000Cmnd rf2000;
 extern rc2000Cmnd rc2000;
 extern unitsCmnd units;
-
+// [Vo Huu Tai 31/8/2015 ]  ADD
+extern relay1Cmd relay1;
+extern relay2Cmd relay2;
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 // extern declarations for functions, variables in the main program
 extern PWM16 ssr;
 extern int levelOT1;
@@ -106,7 +116,7 @@ class awriteCmnd : public CmndBase {
 };
 
 class readCmnd : public CmndBase {
-  public:
+    public:
     readCmnd();
     virtual boolean doCommand( CmndParser* pars );
 };
@@ -152,6 +162,20 @@ class rc2000Cmnd : public CmndBase {
     rc2000Cmnd();
     virtual boolean doCommand( CmndParser* pars );
 };
-
+// [Vo Huu Tai 31/8/2015 ]  Add
+class relay1Cmd : public CmndBase {
+	private:
+		bool bIsFirst = false;
+	public:
+		relay1Cmd();
+		virtual boolean doCommand( CmndParser* pars );
+};
+class relay2Cmd : public CmndBase {
+	private:
+		bool bIsFirst = false;
+	public:
+		relay2Cmd();
+		virtual boolean doCommand( CmndParser* pars );
+};
 #endif
 

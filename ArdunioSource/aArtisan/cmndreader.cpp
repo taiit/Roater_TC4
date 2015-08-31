@@ -50,7 +50,10 @@ io3Cmnd io3;
 unitsCmnd units;
 rf2000Cmnd rf2000;
 rc2000Cmnd rc2000;
-
+// [Vo Huu Tai 31/8/2015 ]  ADD
+relay1Cmd relay1;
+relay2Cmd relay2;
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 // --------------------- dwriteCmnd
 // constructor
 dwriteCmnd::dwriteCmnd() :
@@ -183,7 +186,7 @@ readCmnd::readCmnd() :
 
 boolean readCmnd::doCommand( CmndParser* pars ) {
   if( strcmp( keyword, pars->cmndName() ) == 0 ) {
-    logger();
+    logger();	
     return true;
   }
   else {
@@ -379,3 +382,45 @@ boolean rc2000Cmnd::doCommand( CmndParser* pars ) {
   }
 }
 
+// [Vo Huu Tai 31/8/2015 ]  ADD
+//relay 1
+relay1Cmd::relay1Cmd():
+	CmndBase(RELAY1_CMD){}
+		
+boolean relay1Cmd::doCommand( CmndParser* pars ){
+	 if( strcmp( keyword, pars->cmndName() ) == 0 ) {
+		 //if(bIsFirst){
+			 //bIsFirst = false;
+			 //digitalWrite(LED_BUG, HIGH);   // turn the LED on (HIGH is the voltage level)
+		 //}
+		 //else{
+			 //bIsFirst = true;
+			 //digitalWrite(LED_BUG, LOW);   // turn the LED on (HIGH is the voltage level)
+		 //}
+		 return true;
+	 }
+	 else {
+		 return false;
+	 }
+}
+//relay 2
+relay2Cmd::relay2Cmd():
+CmndBase(RELAY2_CMD){}
+	
+boolean relay2Cmd::doCommand( CmndParser* pars ){
+	if( strcmp( keyword, pars->cmndName() ) == 0 ) {
+		if(bIsFirst){
+			bIsFirst = false;
+			digitalWrite(LED_BUG, HIGH);   // turn the LED on (HIGH is the voltage level)
+		}
+		else{
+			bIsFirst = true;
+			digitalWrite(LED_BUG, LOW);   // turn the LED on (HIGH is the voltage level)
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+// [Vo Huu Tai 31/8/2015 ]  END ADD
