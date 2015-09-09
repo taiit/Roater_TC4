@@ -98,7 +98,6 @@ byte addr[8];
 
 // Pin 13 has an LED connected on most Arduino boards.
 // give it a name:
-int ledBug = 13;
 
 // ------------------------ other compile directives
 #define MIN_DELAY 300   // ms between ADC samples (tested OK at 270)
@@ -208,6 +207,7 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
   TC_TYPE tc;
   float tempF;
 //  int32_t itemp;
+  int uiTemp;
   
   uint16_t dly = amb.getConvTime(); // use delay based on slowest conversion
   uint16_t dADC = adc.getConvTime();
@@ -229,7 +229,12 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
       AT = amb.getAmbF();
       //T[k] = tc.Temp_F( 0.001 * v, AT ); // convert uV to Fahrenheit;
 	  // [Vo Huu Tai 27/8/2015 ]  Simulation sensor data
-	  T[k] =  random(300); //(int)fTempRead();
+	  //T[k] =  random(300); //(int)fTempRead();
+	  // [Vo Huu Tai 1/9/2015 ]  Demo
+	  uiTemp = (int)fTempRead();
+	  if(uiTemp < 70) RELAY_TEMPERATURE_ON;
+	  if(uiTemp > 90)RELAY_TEMPERATURE_OFF;
+	  T[k] = uiTemp;
     }
   }
 };
@@ -322,9 +327,12 @@ float fTempRead()
 	//// default is 12 bit resolution, 750 ms conversion time
 
 	celsius = (float)raw / 16.0;
-	return celsius;
+	return (C_TO_F(celsius));
 }
 
+boolean bHaveGas(){
+	return false;
+}
 // ------------------------------------------------------------------------
 // MAIN
 //
@@ -393,10 +401,19 @@ void setup()
   delay( 500 );
   lcd.clear();
 #endif
-// [Vo Huu Tai 27/8/2015 ]  Add random for simulation sensor data
- randomSeed(analogRead(0));
-  pinMode(13, OUTPUT);  
- #if 0 
+// [Vo Huu Tai 31/8/2015 ]  ADD
+ randomSeed(analogRead(0)); //for random temperature 
+ pinMode(RELAY_1_PIN, OUTPUT);				//Relay 1 <=> Pin 13 
+ pinMode(RELAY_2_PIN, OUTPUT);				//Relay 2 <=> Pin 12 
+ pinMode(RELAY_TEMPERATURE_PIN,OUTPUT);		//Relay t <=> pin 11 
+ pinMode(RELAY_GAS_PIN,OUTPUT);				//Relay g <=> pin 10
+ //turn off all relay
+ digitalWrite(RELAY_1_PIN,HIGH);
+ digitalWrite(RELAY_2_PIN,HIGH);
+ digitalWrite(RELAY_TEMPERATURE_PIN,HIGH);
+ digitalWrite(RELAY_GAS_PIN,HIGH);
+// [Vo Huu Tai 31/8/2015 ]  END ADD
+ #if 1
   while(!ds.search(addr)) //search ds18b20
   {
 	  ds.reset_search();
@@ -413,5 +430,8 @@ void loop()
   updateLCD();
   #endif
   checkSerial();  // Has a command been received?
+  // [Vo Huu Tai 1/9/2015 ]  DEMO GAS SENSOR
+  if(bHaveGas())RELAY_GAS_ON;
+  else RELAY_GAS_OFF;
 }
 

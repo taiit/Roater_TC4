@@ -165,14 +165,14 @@ class rc2000Cmnd : public CmndBase {
 // [Vo Huu Tai 31/8/2015 ]  Add
 class relay1Cmd : public CmndBase {
 	private:
-		bool bIsFirst = false;
+		bool bIsFirstPress = false;
 	public:
 		relay1Cmd();
 		virtual boolean doCommand( CmndParser* pars );
 };
 class relay2Cmd : public CmndBase {
 	private:
-		bool bIsFirst = false;
+		bool bIsFirstPress = false;
 	public:
 		relay2Cmd();
 		virtual boolean doCommand( CmndParser* pars );

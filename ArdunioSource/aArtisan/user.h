@@ -36,12 +36,21 @@
 #define NC 4 // maximum number of physical channels on the TC4
 
 // Useful for debugging only -- leave inactive otherwise
-#define MEMORY_CHK
+//#define MEMORY_CHK
 
 // This turns on the "# xxxxxxx\n" acknowledgments after commands
 //#define ACKS_ON
 
-#define LED_BUG 13 //led bug pin
+// [Vo Huu Tai 31/8/2015 ]  ADD
+#define RELAY_1_PIN				13 //Led, and relay 1
+#define RELAY_2_PIN				12 //relay 2
+#define RELAY_TEMPERATURE_PIN	11
+#define RELAY_GAS_PIN			10
+#define RELAY_TEMPERATURE_ON	digitalWrite(RELAY_TEMPERATURE_PIN, LOW)
+#define RELAY_TEMPERATURE_OFF	digitalWrite(RELAY_TEMPERATURE_PIN, HIGH)
+#define RELAY_GAS_ON			digitalWrite(RELAY_GAS_PIN, LOW)
+#define RELAY_GAS_OFF			digitalWrite(RELAY_GAS_PIN, HIGH)
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 
 // *************************************************************************************
 
