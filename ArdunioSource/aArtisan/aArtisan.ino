@@ -68,8 +68,6 @@
 
 // this library included with the arduino distribution
 #include <Wire.h>
-#include <OneWire.h> //Ds18b20
-
 
 // The user.h file contains user-definable and some other global compiler options
 // It must be located in the same folder as aArtisan.pde
@@ -91,10 +89,6 @@
 #ifdef LCD
 #include <cLCD.h> // required only if LCD is used
 #endif
-
-OneWire  ds(7);  // on pin 7 (a 4.7K resistor is necessary)
-
-byte addr[8];
 
 // Pin 13 has an LED connected on most Arduino boards.
 // give it a name:
@@ -149,7 +143,16 @@ char st1[6],st2[6];
 #endif
 #endif
 // --------------------------------------------- end LCD interface
-
+// [Vo Huu Tai 9/9/2015 ]  ADD NEW
+#include <OneWire.h> //Ds18b20
+#include <max6675.h> //MAX6675
+int thermoSO = 15;	//SO <=> PC1 <=> Pin15 on ardunio uno
+int thermoCS = 17;	//CS <=> PC3 <=> Pin17 on ardunio uno
+int thermoCLK = 16; //CLK <=> PC2 <=> Pin16 on ardunio uno
+byte addr[8];
+OneWire  ds(7);  // on pin 7 (a 4.7K resistor is necessary)
+MAX6675 thermocouple(thermoCLK, thermoCS, thermoSO);
+// [Vo Huu Tai 9/9/2015 ]  END ADD
 // ------------- wrapper for the command interpreter's serial line reader
 void checkSerial() {
   const char* result = ci.checkSerial();
@@ -231,9 +234,13 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
 	  // [Vo Huu Tai 27/8/2015 ]  Simulation sensor data
 	  //T[k] =  random(300); //(int)fTempRead();
 	  // [Vo Huu Tai 1/9/2015 ]  Demo
-	  uiTemp = (int)fTempRead();
-	  if(uiTemp < 70) RELAY_TEMPERATURE_ON;
-	  if(uiTemp > 90)RELAY_TEMPERATURE_OFF;
+	  uiTemp = thermocouple.fReadCelsius();//(int)fTempRead(); 
+	  if(uiTemp < 70){
+		  VAN_GAS_ON;
+	  }
+	  if(uiTemp > 90){
+		  VAN_GAS_OFF;
+	  }
 	  T[k] = uiTemp;
     }
   }
@@ -331,7 +338,15 @@ float fTempRead()
 }
 
 boolean bHaveGas(){
-	return false;
+	if(analogRead(GAS_PIN) > 900)return true;
+	else return false;
+}
+void vBeep(unsigned int iMiliSeconds){
+	BEEP_ON;
+	while(iMiliSeconds--){
+		delay(1); //<=> _delay_ms
+	}
+	BEEP_OFF;
 }
 // ------------------------------------------------------------------------
 // MAIN
@@ -401,37 +416,52 @@ void setup()
   delay( 500 );
   lcd.clear();
 #endif
+
 // [Vo Huu Tai 31/8/2015 ]  ADD
  randomSeed(analogRead(0)); //for random temperature 
- pinMode(RELAY_1_PIN, OUTPUT);				//Relay 1 <=> Pin 13 
- pinMode(RELAY_2_PIN, OUTPUT);				//Relay 2 <=> Pin 12 
- pinMode(RELAY_TEMPERATURE_PIN,OUTPUT);		//Relay t <=> pin 11 
- pinMode(RELAY_GAS_PIN,OUTPUT);				//Relay g <=> pin 10
- //turn off all relay
- digitalWrite(RELAY_1_PIN,HIGH);
- digitalWrite(RELAY_2_PIN,HIGH);
- digitalWrite(RELAY_TEMPERATURE_PIN,HIGH);
- digitalWrite(RELAY_GAS_PIN,HIGH);
-// [Vo Huu Tai 31/8/2015 ]  END ADD
- #if 1
+ MTC_PIN_MODE_INNT;
+ MCT_PIN_DEFAULT_SETTING; //turn off all MOSFET
+ PWM_TIMER_1_INIT;
+  #if 0
   while(!ds.search(addr)) //search ds18b20
   {
 	  ds.reset_search();
 	  delay(250);
   }
   #endif
+// [Vo Huu Tai 31/8/2015 ]  END ADD
 }
 
 // -----------------------------------------------------------------
 void loop()
-{
-  get_samples();
-  #ifdef LCD
-  updateLCD();
-  #endif
-  checkSerial();  // Has a command been received?
-  // [Vo Huu Tai 1/9/2015 ]  DEMO GAS SENSOR
-  if(bHaveGas())RELAY_GAS_ON;
-  else RELAY_GAS_OFF;
+{	
+	get_samples();
+	#ifdef LCD
+	updateLCD();
+	#endif
+	checkSerial();  // Has a command been received?
+	// [Vo Huu Tai 1/9/2015 ]  DEMO GAS SENSOR
+	 if(bHaveGas()){
+		 IGNITION_ON;
+		 vBeep(100);
+	 }  
+	 else{
+		 IGNITION_OFF;
+	 }
+	 
+	/*
+		The MAX6675 has a maximum conversion time of 0.22 seconds.
+		If the device is sampled faster than this it will continue 
+		to output the temperature that was first read without any 
+		indication that it is being read too fast - 
+		I found a delay of at least 250ms between readings the device worked well. 
+		Serial.print("Data: ");
+		Serial.println( thermocouple.fReadCelsius(), 2 );
+		_delay_ms(250);
+		
+		Test gas sensor
+		Serial.println(analogRead(GAS_PIN));
+		delay(100); // Print value every 100 msec.
+	*/	
+	
 }
-

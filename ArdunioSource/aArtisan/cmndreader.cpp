@@ -391,11 +391,13 @@ boolean relay1Cmd::doCommand( CmndParser* pars ){
 	 if( strcmp( keyword, pars->cmndName() ) == 0 ) {
 		if(bIsFirstPress){
 			bIsFirstPress = false;
-			digitalWrite(RELAY_1_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+			MOTOR_1_ON;
+			
 		}
-		else{
+		else{//false => turn off
 			bIsFirstPress = true;
-			digitalWrite(RELAY_1_PIN, LOW);   // turn the LED on (HIGH is the voltage level)
+			MOTOR_1_OFF;
+			
 		}
 		return true;
 	 }
@@ -411,11 +413,11 @@ boolean relay2Cmd::doCommand( CmndParser* pars ){
 	if( strcmp( keyword, pars->cmndName() ) == 0 ) {
 		if(bIsFirstPress){
 			bIsFirstPress = false;
-			digitalWrite(RELAY_2_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+			MOTOR_2_ON;
 		}
-		else{
+		else{//false => turn off
 			bIsFirstPress = true;
-			digitalWrite(RELAY_2_PIN, LOW);   // turn the LED on (HIGH is the voltage level)
+			MOTOR_2_OFF;
 		}
 		return true;
 	}
