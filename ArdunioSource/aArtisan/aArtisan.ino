@@ -106,7 +106,7 @@ calBlock caldata;
 #endif
 
 float AT; // ambient temp
-float T[NC];  // final output values referenced to physical channels 0-3
+float TemperatureData[NC];  // final output values referenced to physical channels 0-3
 uint8_t actv[NC];  // identifies channel status, 0 = inactive, n = physical channel + 1
 #ifdef CELSIUS // only affects startup conditions
 boolean Cscale = true;
@@ -197,7 +197,7 @@ void logger()
     if( k > 0 ) {
       --k;
       Serial.print(",");
-      Serial.print( convertUnits( T[k] ), 1 );
+      Serial.print( convertUnits( TemperatureData[k] ), 2 );
     }
   }
   Serial.println();
@@ -210,7 +210,7 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
   TC_TYPE tc;
   float tempF;
 //  int32_t itemp;
-  int uiTemp;
+  float uiTemp;
   
   uint16_t dly = amb.getConvTime(); // use delay based on slowest conversion
   uint16_t dADC = adc.getConvTime();
@@ -241,7 +241,7 @@ void get_samples() // this function talks to the amb sensor and ADC via I2C
 	  if(uiTemp > 90){
 		  VAN_GAS_OFF;
 	  }
-	  T[k] = uiTemp;
+	  TemperatureData[k] = uiTemp;
     }
   }
 };
@@ -268,7 +268,7 @@ void updateLCD() {
     k = actv[jj];
     if( k != 0 ) {
       ++j;
-      it01 = round( convertUnits( T[k-1] ) );
+      it01 = round( convertUnits( TemperatureData[k-1] ) );
       if( it01 > 999 ) 
         it01 = 999;
       else
@@ -338,7 +338,7 @@ float fTempRead()
 }
 
 boolean bHaveGas(){
-	if(analogRead(GAS_PIN) > 900)return true;
+	if(analogRead(GAS_PIN) > 800)return true;
 	else return false;
 }
 void vBeep(unsigned int iMiliSeconds){
@@ -347,6 +347,14 @@ void vBeep(unsigned int iMiliSeconds){
 		delay(1); //<=> _delay_ms
 	}
 	BEEP_OFF;
+}
+void vPWM1Control(uint8_t percent)
+{
+	OCR1A = (100-percent)*20000/100;
+}
+void vPWM2Control(uint8_t percent)
+{
+	OCR1B = (100-percent)*20000/100;
 }
 // ------------------------------------------------------------------------
 // MAIN
@@ -464,4 +472,6 @@ void loop()
 		delay(100); // Print value every 100 msec.
 	*/	
 	
+	//vPWM1Control(100);
+	//vPWM2Control(1);
 }

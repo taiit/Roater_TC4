@@ -1,0 +1,12 @@
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\bin\Debug\mtcLogger.exe.config
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\bin\Debug\mtcLogger.exe
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\bin\Debug\mtcLogger.pdb
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\bin\Debug\ZedGraph.dll
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.csprojResolveAssemblyReference.cache
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.mainForm.resources
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.Properties.Resources.resources
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.csproj.GenerateResource.Cache
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.exe
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.pdb
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.SamplingForm.resources
+C:\Users\Vo Huu Tai\Dropbox\Project_2015\Roater\trunk\hostsoftware\mtcLogger\mtcLogger\obj\Debug\mtcLogger.SerialSetting.resources
